@@ -42,7 +42,8 @@ test("server-renders the Sigma Code landing page", async () => {
   assert.match(html, /Terminal-Bench 2\.1/);
   assert.match(html, /https:\/\/github\.com\/hututuQQQ\/sigma/);
   assert.match(html, /application\/ld\+json/);
-  assert.match(html, /sigma-code-og-1200\.png/);
+  assert.match(html, /sigma-code-demo\.gif/);
+  assert.match(html, /\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -59,6 +60,8 @@ test("keeps production assets and responsive source in place", async () => {
     access(new URL("../public/sigma-code-tui.png", import.meta.url)),
     access(new URL("../public/sigma-code-desktop.webp", import.meta.url)),
     access(new URL("../public/sigma-code-og-1200.png", import.meta.url)),
+    access(new URL("../public/sigma-code-demo.gif", import.meta.url)),
+    access(new URL("../public/og.png", import.meta.url)),
   ]);
 
   assert.match(page, /"@type": "SoftwareApplication"/);

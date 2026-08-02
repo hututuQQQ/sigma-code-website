@@ -3,13 +3,6 @@
 const githubUrl = "https://github.com/hututuQQQ/sigma";
 const releaseUrl = "https://github.com/hututuQQQ/sigma/releases/tag/v0.1.4";
 
-const sessionEvents = [
-  { time: "17:42:08", label: "checkpoint sealed", tone: "good" },
-  { time: "17:42:11", label: "process interrupted", tone: "warn" },
-  { time: "17:44:03", label: "session resumed", tone: "live" },
-  { time: "17:45:27", label: "tests passed · 148/148", tone: "good" },
-];
-
 const features = [
   {
     number: "01",
@@ -161,15 +154,16 @@ export default function Home() {
           <div className="hero-copy">
             <div className="hero-badge">
               <span className="status-dot" aria-hidden="true" />
-              OPEN SOURCE · MIT LICENSE
+              OPEN SOURCE · BUILT FOR LONG RUNS
             </div>
-            <p className="hero-kicker">THE AGENT THAT REMEMBERS — AND PROVES.</p>
+            <p className="hero-kicker">THE AGENT THAT REMEMBERS THE JOB.</p>
             <h1>
-              不会因中断丢进度，
-              <span>不会在没有验证时宣称完成。</span>
+              中断了，<span>继续跑。</span>
+              <em>没验证，不算完。</em>
             </h1>
             <p className="hero-lead">
-              Sigma Code 是一个开源 Coding Agent：在原生沙箱中执行长任务，从中断处继续，并在测试与审查通过后才交付结果。
+              不会因中断丢进度，也不会在没有验证时宣称完成。Sigma Code
+              在原生沙箱里执行长任务，从检查点恢复，用测试与审查证据交付结果。
             </p>
 
             <div className="hero-actions">
@@ -198,72 +192,66 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-visual" aria-label="Sigma Code 会话恢复与验证演示">
-            <div className="console-window">
-              <div className="console-titlebar">
+          <div className="hero-visual" aria-label="Sigma Code 桌面端真实任务演示">
+            <span className="demo-orbit orbit-one" aria-hidden="true" />
+            <span className="demo-orbit orbit-two" aria-hidden="true" />
+
+            <div className="demo-shell">
+              <div className="demo-toolbar">
                 <div className="window-dots" aria-hidden="true">
                   <span />
                   <span />
                   <span />
                 </div>
-                <span>session / sc-8f2a</span>
-                <span className="console-running">RUNNING</span>
-              </div>
-
-              <div className="console-command">
-                <span className="prompt">$</span>
-                <span>sigma run &quot;refactor auth and verify&quot;</span>
-              </div>
-
-              <div className="event-stream">
-                {sessionEvents.map((event) => (
-                  <div className="event-row" key={event.time}>
-                    <span className="event-time">{event.time}</span>
-                    <span className={`event-indicator ${event.tone}`} />
-                    <span className="event-label">{event.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="resume-card">
-                <div>
-                  <span className="resume-label">RECOVERY</span>
-                  <strong>任务现场已恢复</strong>
-                </div>
-                <span className="resume-stat">00:01.8</span>
-              </div>
-
-              <div className="evidence-footer">
-                <span>
-                  <span className="check" aria-hidden="true">✓</span> COMPLETED
+                <span className="demo-session">sigma-code / durable-session</span>
+                <span className="demo-live">
+                  <i aria-hidden="true" /> LIVE DEMO
                 </span>
-                <span>12 evidence receipts</span>
+              </div>
+
+              <div className="demo-media">
+                <img
+                  className="demo-gif"
+                  src="/sigma-code-demo.gif"
+                  alt="Sigma Code 桌面端从任务指令到代码变更与验证完成的交互演示"
+                  width={1280}
+                  height={720}
+                  fetchPriority="high"
+                />
+                <span className="demo-scanline" aria-hidden="true" />
+                <span className="demo-vignette" aria-hidden="true" />
+              </div>
+
+              <div className="demo-footer">
+                <span>AGENT RUN</span>
+                <span className="demo-progress" aria-hidden="true"><i /></span>
+                <strong>RESUME → PROVE</strong>
               </div>
             </div>
 
-            <div className="floating-note note-top">
-              <span className="note-icon">↻</span>
-              <span><strong>RESUMED</strong> after interruption</span>
+            <div className="demo-chip chip-resume">
+              <span aria-hidden="true">↻</span>
+              <div><strong>RESUMABLE</strong><small>从检查点继续</small></div>
             </div>
-            <div className="floating-note note-bottom">
-              <span className="note-icon">✓</span>
-              <span><strong>PROVED</strong> by tests + review</span>
+            <div className="demo-chip chip-evidence">
+              <span aria-hidden="true">✓</span>
+              <div><strong>PROVED</strong><small>测试与审查通过</small></div>
             </div>
           </div>
         </section>
 
         <section className="proof-strip" aria-label="Sigma Code 关键能力">
-          <div><span>01</span> Native sandbox</div>
-          <div><span>02</span> Resume after restart</div>
-          <div><span>03</span> Evidence-backed completion</div>
-          <div><span>04</span> Open source · MIT</div>
+          <div><strong>57.303%</strong><span>Terminal-Bench 2.1</span></div>
+          <div><strong>89</strong><span>完整任务 · 同一设置</span></div>
+          <div><strong>Native</strong><span>Linux / Windows 沙箱</span></div>
+          <div><strong>MIT</strong><span>开源 · 可审计</span></div>
         </section>
 
         <section className="section capabilities" id="capabilities">
           <div className="section-heading">
             <div>
               <p className="eyebrow">WHY SIGMA CODE</p>
-              <h2>长任务真正需要的三件事。</h2>
+              <h2>一个更不容易骗过自己的 Coding Agent。</h2>
             </div>
             <p>
               模型能力只是起点。真正可靠的 Coding Agent，还需要受控执行、可恢复状态和可验证交付。
