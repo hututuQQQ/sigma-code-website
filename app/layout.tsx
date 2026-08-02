@@ -20,12 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol =
     requestHeaders.get("x-forwarded-proto") ??
     (host?.startsWith("localhost") ? "http" : "https");
-  const ogImage = new URL("/og.png", `${protocol}://${host ?? "localhost:3000"}`);
+  const origin = `${protocol}://${host ?? "localhost:3000"}`;
+  const ogImage = new URL("/og-v2.png", origin);
 
   return {
-    title: "Sigma Code — 不会因中断丢进度的开源 Coding Agent",
+    title: "Sigma Code — 可恢复、可验证的开源 Coding Agent",
     description:
-      "Sigma Code 在原生沙箱中执行长任务，从中断处继续，并在验证通过后才宣告完成。",
+      "Sigma Code 为长任务而生：耐久会话、原生沙箱，以及由测试与审查证据约束的完成协议。",
     keywords: [
       "Sigma Code",
       "Coding Agent",
@@ -34,28 +35,40 @@ export async function generateMetadata(): Promise<Metadata> {
       "AI Agent 沙箱",
       "DeepSeek Coding Agent",
     ],
+    alternates: {
+      canonical: new URL("/", origin),
+      languages: {
+        "zh-CN": new URL("/", origin),
+        en: new URL("/en", origin),
+      },
+    },
     icons: {
-      icon: "/sigma-code-mark.png",
-      shortcut: "/sigma-code-mark.png",
+      icon: [
+        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon.ico" },
+      ],
+      shortcut: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
     },
     openGraph: {
       type: "website",
       locale: "zh_CN",
-      title: "Sigma Code — Survives interruptions. Proves its changes.",
+      title: "Sigma Code — 让任务越过中断，带着证据完成",
       description:
-        "不会因中断丢进度、不会在没有验证时宣称完成的开源 Coding Agent。",
+        "耐久会话、原生沙箱，以及由测试与审查证据约束的开源 Coding Agent。",
       images: [
         {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: "Sigma Code — Resume. Verify. Ship.",
+          alt: "Sigma Code — Work survives. Proof closes the task.",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Sigma Code — Survives interruptions. Proves its changes.",
+      title: "Sigma Code — Work survives. Proof closes the task.",
       description:
         "An open-source coding agent with durable sessions, native sandboxing, and evidence-backed completion.",
       images: [ogImage],
@@ -70,11 +83,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
 }
