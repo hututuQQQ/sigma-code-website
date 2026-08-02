@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { LandingPage } from "../landing-page";
+import { siteFontClassName } from "../site-fonts";
+import {
+  getLanguageAlternates,
+  getRequestOrigin,
+  siteIcons,
+} from "../site-metadata";
+import "../globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol =
-    requestHeaders.get("x-forwarded-proto") ??
-    (host?.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host ?? "localhost:3000"}`;
+  const origin = await getRequestOrigin();
+  const ogImage = new URL("/og-v2.png", origin);
 
   return {
     title: "Sigma Code — Durable, verifiable coding agent",
     description:
       "An open-source coding agent with durable sessions, native sandboxing, and evidence-backed completion.",
     alternates: {
-      canonical: `${origin}/en`,
-      languages: { "zh-CN": origin, en: `${origin}/en` },
+      canonical: new URL("/en", origin),
+      languages: getLanguageAlternates(origin),
     },
+    icons: siteIcons,
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "Durable sessions, native sandboxes, and evidence-backed completion.",
       images: [
         {
-          url: new URL("/og-v2.png", origin),
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: "Sigma Code — Work survives. Proof closes the task.",
@@ -39,11 +40,19 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Sigma Code — Work survives. Proof closes the task.",
       description:
         "Durable sessions, native sandboxes, and evidence-backed completion.",
-      images: [new URL("/og-v2.png", origin)],
+      images: [ogImage],
     },
   };
 }
 
-export default function EnglishHome() {
-  return <LandingPage locale="en" />;
+export default function EnglishRootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={siteFontClassName}>{children}</body>
+    </html>
+  );
 }

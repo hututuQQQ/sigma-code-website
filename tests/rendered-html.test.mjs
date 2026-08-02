@@ -2,14 +2,18 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(pathname = "/") {
+async function render(pathname = "/", accept = "text/html") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
     new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
+      headers: {
+        accept,
+        "x-forwarded-host": "localhost",
+        "x-forwarded-proto": "http",
+      },
     }),
     {
       ASSETS: {
@@ -20,6 +24,18 @@ async function render(pathname = "/") {
       waitUntil() {},
       passThroughOnException() {},
     },
+  );
+}
+
+function assertAlternate(html, hrefLang, href) {
+  const alternateLinks = html.match(/<link\b[^>]*rel="alternate"[^>]*>/gi) ?? [];
+  assert.ok(
+    alternateLinks.some(
+      (link) =>
+        new RegExp(`hrefLang="${hrefLang}"`, "i").test(link) &&
+        link.includes(`href="${href}"`),
+    ),
+    `Expected an alternate link for ${hrefLang} pointing to ${href}`,
   );
 }
 
@@ -45,6 +61,9 @@ test("server-renders the Sigma Code landing page", async () => {
   assert.match(html, /sigma-code-demo\.gif/);
   assert.match(html, /href="\/en"/);
   assert.match(html, /\/og-v2\.png/);
+  assertAlternate(html, "zh-CN", "http://localhost/");
+  assertAlternate(html, "en", "http://localhost/en");
+  assertAlternate(html, "x-default", "http://localhost/");
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -54,19 +73,71 @@ test("server-renders the English landing page", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>Sigma Code — Durable, verifiable coding agent<\/title>/);
-  assert.match(html, /lang="en"/);
+  assert.match(html, /<html lang="en">/);
   assert.match(html, /Work survives the interruption/);
   assert.match(html, /Proof closes the task/);
   assert.match(html, /Completion requires evidence/);
   assert.match(html, /Terminal-Bench 2\.1/);
+  assertAlternate(html, "zh-CN", "http://localhost/");
+  assertAlternate(html, "en", "http://localhost/en");
+  assertAlternate(html, "x-default", "http://localhost/");
+});
+
+test("serves crawler policy with the production sitemap URL", async () => {
+  const response = await render("/robots.txt", "text/plain");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/plain\b/i);
+
+  const robots = await response.text();
+  assert.match(robots, /^User-agent: \*$/m);
+  assert.match(robots, /^Allow: \/$/m);
+  assert.match(
+    robots,
+    /^Sitemap: https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/sitemap\.xml$/m,
+  );
+});
+
+test("serves a bilingual sitemap with reciprocal alternates", async () => {
+  const response = await render("/sitemap.xml", "application/xml");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^application\/xml\b/i);
+
+  const sitemap = await response.text();
+  assert.equal((sitemap.match(/<url>/g) ?? []).length, 2);
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/<\/loc>/,
+  );
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/en<\/loc>/,
+  );
+  assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 2);
+  assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 2);
+  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 2);
 });
 
 test("keeps production assets and responsive source in place", async () => {
-  const [page, landing, englishPage, layout, css, packageJson] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+  const [
+    page,
+    landing,
+    englishPage,
+    chineseLayout,
+    englishLayout,
+    robotsRoute,
+    sitemapRoute,
+    siteConfig,
+    css,
+    packageJson,
+  ] = await Promise.all([
+    readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/landing-page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/robots.txt/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/sitemap.xml/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/site-config.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
@@ -92,9 +163,13 @@ test("keeps production assets and responsive source in place", async () => {
   assert.match(landing, /id="download"/);
   assert.match(landing, /sigma-code-demo\.webp/);
   assert.match(englishPage, /locale="en"/);
-  assert.match(layout, /openGraph:/);
-  assert.match(layout, /twitter:/);
-  assert.match(layout, /favicon-32x32\.png/);
+  assert.match(chineseLayout, /openGraph:/);
+  assert.match(chineseLayout, /twitter:/);
+  assert.match(chineseLayout, /lang="zh-CN"/);
+  assert.match(englishLayout, /lang="en"/);
+  assert.match(robotsRoute, /Sitemap:/);
+  assert.match(sitemapRoute, /x-default/);
+  assert.match(siteConfig, /NEXT_PUBLIC_SITE_URL/);
   assert.match(css, /@media \(max-width: 600px\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);

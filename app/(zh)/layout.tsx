@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { headers } from "next/headers";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { siteFontClassName } from "../site-fonts";
+import {
+  getLanguageAlternates,
+  getRequestOrigin,
+  siteIcons,
+} from "../site-metadata";
+import "../globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol =
-    requestHeaders.get("x-forwarded-proto") ??
-    (host?.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host ?? "localhost:3000"}`;
+  const origin = await getRequestOrigin();
   const ogImage = new URL("/og-v2.png", origin);
 
   return {
@@ -37,20 +25,9 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     alternates: {
       canonical: new URL("/", origin),
-      languages: {
-        "zh-CN": new URL("/", origin),
-        en: new URL("/en", origin),
-      },
+      languages: getLanguageAlternates(origin),
     },
-    icons: {
-      icon: [
-        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-        { url: "/favicon.ico" },
-      ],
-      shortcut: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
-    },
+    icons: siteIcons,
     openGraph: {
       type: "website",
       locale: "zh_CN",
@@ -76,14 +53,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default function ChineseRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="zh-CN">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={siteFontClassName}>{children}</body>
     </html>
   );
 }
