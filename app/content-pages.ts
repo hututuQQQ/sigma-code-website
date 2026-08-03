@@ -1,38 +1,26 @@
 import { RELEASE_VERSION } from "./site-config";
+import { technicalContentPages } from "./technical-content-pages";
+import type {
+  BaseContentSlug,
+  ContentLocale,
+  ContentPageData,
+  ContentSlug,
+} from "./content-types";
 
-export const CONTENT_SLUGS = [
-  "durable-sessions",
-  "native-sandbox",
-  "evidence-backed-completion",
-  "getting-started",
-] as const;
+export {
+  CONTENT_SLUGS,
+  DOC_SLUGS,
+  FEATURE_SLUGS,
+  isDocSlug,
+} from "./content-types";
+export type {
+  ContentLocale,
+  ContentPageData,
+  ContentSection,
+  ContentSlug,
+} from "./content-types";
 
-export type ContentSlug = (typeof CONTENT_SLUGS)[number];
-export type ContentLocale = "zh" | "en";
-
-export type ContentSection = {
-  heading: string;
-  paragraphs: readonly string[];
-  bullets?: readonly string[];
-  code?: string;
-};
-
-export type ContentPageData = {
-  slug: ContentSlug;
-  locale: ContentLocale;
-  path: string;
-  alternatePath: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  lead: string;
-  sections: readonly ContentSection[];
-  faqs: readonly (readonly [string, string])[];
-  ctaTitle: string;
-  ctaBody: string;
-};
-
-export const contentPages = {
+const baseContentPages = {
   zh: {
     "durable-sessions": {
       slug: "durable-sessions",
@@ -545,6 +533,11 @@ export const contentPages = {
         "Verify the artifact first, then use doctor to check the runtime and model connection.",
     },
   },
+} satisfies Record<ContentLocale, Record<BaseContentSlug, ContentPageData>>;
+
+export const contentPages = {
+  zh: { ...baseContentPages.zh, ...technicalContentPages.zh },
+  en: { ...baseContentPages.en, ...technicalContentPages.en },
 } satisfies Record<ContentLocale, Record<ContentSlug, ContentPageData>>;
 
 export function getContentPage(locale: ContentLocale, slug: ContentSlug) {

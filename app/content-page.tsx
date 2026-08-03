@@ -2,8 +2,10 @@
 
 import type { Metadata } from "next";
 import {
-  CONTENT_SLUGS,
+  DOC_SLUGS,
+  FEATURE_SLUGS,
   getContentPage,
+  isDocSlug,
   type ContentPageData,
 } from "./content-pages";
 import {
@@ -74,7 +76,14 @@ export function ContentPage({ page }: { page: ContentPageData }) {
   const isChinese = page.locale === "zh";
   const homePath = isChinese ? "/" : "/en";
   const paths = languagePaths(page);
-  const relatedPages = CONTENT_SLUGS.filter((slug) => slug !== page.slug)
+  const relatedSlugs = isDocSlug(page.slug)
+    ? DOC_SLUGS.filter((slug) => slug !== page.slug)
+    : [
+        ...FEATURE_SLUGS.filter((slug) => slug !== page.slug),
+        "getting-started" as const,
+      ];
+  const relatedPages = relatedSlugs
+    .slice(0, 3)
     .map((slug) => getContentPage(page.locale, slug));
   const structuredData = {
     "@context": "https://schema.org",
@@ -152,7 +161,7 @@ export function ContentPage({ page }: { page: ContentPageData }) {
         <nav className="breadcrumbs" aria-label={isChinese ? "面包屑" : "Breadcrumb"}>
           <a href={homePath}>{isChinese ? "首页" : "Home"}</a>
           <span aria-hidden="true">/</span>
-          <span>{page.slug === "getting-started" ? (isChinese ? "入门" : "Getting started") : (isChinese ? "功能" : "Features")}</span>
+          <span>{isDocSlug(page.slug) ? (isChinese ? "文档" : "Docs") : (isChinese ? "功能" : "Features")}</span>
         </nav>
 
         <article className="content-article">

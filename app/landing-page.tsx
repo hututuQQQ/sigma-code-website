@@ -105,7 +105,7 @@ const copy = {
     guidesEyebrow: "PRODUCT GUIDES",
     guidesTitle: "深入理解一个可靠 Coding Agent。",
     guidesBody:
-      "从可恢复会话、原生沙箱到证据式完成，了解 Sigma Code 如何把可靠性做成运行时能力，并用入门指南完成第一次配置。",
+      "从可恢复会话、原生沙箱到 CLI、架构和评测方法，了解 Sigma Code 如何把可靠性做成运行时能力。",
     guidesRead: "阅读指南",
     guides: [
       {
@@ -127,6 +127,26 @@ const copy = {
         title: "Sigma Code 入门",
         body: "下载、配置 Provider、运行 doctor 并启动第一个真实任务。",
         href: "/docs/getting-started",
+      },
+      {
+        title: "CLI、配置与 Provider",
+        body: "查阅常用命令、权限默认值、认证方式与模型选择。",
+        href: "/docs/cli-and-configuration",
+      },
+      {
+        title: "Runtime 架构",
+        body: "理解事件循环、组合根、包边界以及 ACP v1 如何连接桌面端。",
+        href: "/docs/architecture",
+      },
+      {
+        title: "安全、权限与恢复",
+        body: "深入原生执行边界、耐久存储、检查点和完成协议。",
+        href: "/docs/security-and-recovery",
+      },
+      {
+        title: "透明评测方法",
+        body: "查看预注册、公平边界、诊断结果与正确解读方式。",
+        href: "/docs/evaluation",
       },
     ],
     faqEyebrow: "FAQ",
@@ -237,7 +257,7 @@ const copy = {
     guidesEyebrow: "PRODUCT GUIDES",
     guidesTitle: "Understand what makes a coding agent dependable.",
     guidesBody:
-      "Explore durable sessions, native sandboxing, evidence-backed completion, and a practical path to your first Sigma Code task.",
+      "Explore durable sessions, native sandboxing, CLI configuration, runtime architecture, and the published evaluation method.",
     guidesRead: "Read guide",
     guides: [
       {
@@ -259,6 +279,26 @@ const copy = {
         title: "Get started with Sigma Code",
         body: "Download, configure a provider, run doctor, and begin a real task.",
         href: "/en/docs/getting-started",
+      },
+      {
+        title: "CLI, configuration, and providers",
+        body: "Reference core commands, permission defaults, authentication, and model selection.",
+        href: "/en/docs/cli-and-configuration",
+      },
+      {
+        title: "Runtime architecture",
+        body: "Understand the event loop, composition root, package boundaries, and ACP v1 desktop bridge.",
+        href: "/en/docs/architecture",
+      },
+      {
+        title: "Security, permissions, and recovery",
+        body: "Inspect the native execution boundary, durable store, checkpoints, and completion protocol.",
+        href: "/en/docs/security-and-recovery",
+      },
+      {
+        title: "Transparent evaluation",
+        body: "Read the preregistration rules, fairness boundary, diagnostic result, and limitations.",
+        href: "/en/docs/evaluation",
       },
     ],
     faqEyebrow: "FAQ",
@@ -283,7 +323,8 @@ const copy = {
 export function LandingPage({ locale }: { locale: Locale }) {
   const text = copy[locale];
   const isChinese = locale === "zh";
-  const readmeUrl = `${githubUrl}/blob/main/${isChinese ? "README.zh-CN.md" : "README.md"}`;
+  const architectureUrl = isChinese ? "/docs/architecture" : "/en/docs/architecture";
+  const evaluationUrl = isChinese ? "/docs/evaluation" : "/en/docs/evaluation";
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -409,7 +450,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
               <p className="overline overline-dark">{text.workflowEyebrow}</p>
               <h2>{text.workflowTitle}</h2>
               <p>{text.workflowBody}</p>
-              <a href={readmeUrl} target="_blank" rel="noreferrer">{text.workflowLink} <span aria-hidden="true">↗</span></a>
+              <a href={architectureUrl}>{text.workflowLink} <span aria-hidden="true">→</span></a>
             </div>
 
             <ol className="workflow-list">
@@ -447,7 +488,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
             <h2>{text.evidenceTitle}</h2>
             <p>{text.evidenceBody}</p>
             <p className="evidence-caveat">{text.evidenceCaveat}</p>
-            <a href={readmeUrl} target="_blank" rel="noreferrer">{text.evidenceLink} <span aria-hidden="true">↗</span></a>
+            <a href={evaluationUrl}>{text.evidenceLink} <span aria-hidden="true">→</span></a>
           </div>
 
           <div className="benchmark" aria-label="Terminal-Bench 2.1">

@@ -74,6 +74,10 @@ test("server-renders the Sigma Code landing page", async () => {
   assertAlternate(html, "x-default", "https://sigmacode.biz/");
   assert.match(html, /href="\/features\/durable-sessions"/);
   assert.match(html, /href="\/docs\/getting-started"/);
+  assert.match(html, /href="\/docs\/architecture"/);
+  assert.match(html, /href="\/docs\/evaluation"/);
+  assert.match(html, /href="\/docs\/cli-and-configuration"/);
+  assert.match(html, /href="\/docs\/security-and-recovery"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -129,10 +133,18 @@ test("server-renders distinct bilingual product guides", async () => {
     "/features/native-sandbox",
     "/features/evidence-backed-completion",
     "/docs/getting-started",
+    "/docs/cli-and-configuration",
+    "/docs/architecture",
+    "/docs/security-and-recovery",
+    "/docs/evaluation",
     "/en/features/durable-sessions",
     "/en/features/native-sandbox",
     "/en/features/evidence-backed-completion",
     "/en/docs/getting-started",
+    "/en/docs/cli-and-configuration",
+    "/en/docs/architecture",
+    "/en/docs/security-and-recovery",
+    "/en/docs/evaluation",
   ];
 
   for (const pathname of paths) {
@@ -146,6 +158,14 @@ test("server-renders distinct bilingual product guides", async () => {
     if (pathname.endsWith("/docs/getting-started")) {
       assert.match(html, /0\.1\.5/, pathname);
       assert.doesNotMatch(html, /0\.1\.4/, pathname);
+    }
+    if (pathname.endsWith("/docs/architecture")) {
+      assert.match(html, /RuntimeClient/, pathname);
+      assert.match(html, /ACP v1/, pathname);
+    }
+    if (pathname.endsWith("/docs/evaluation")) {
+      assert.match(html, /51\/89/, pathname);
+      assert.match(html, /57\.303%/, pathname);
     }
   }
 });
@@ -170,7 +190,7 @@ test("serves a bilingual sitemap with reciprocal alternates", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^application\/xml\b/i);
 
   const sitemap = await response.text();
-  assert.equal((sitemap.match(/<url>/g) ?? []).length, 10);
+  assert.equal((sitemap.match(/<url>/g) ?? []).length, 18);
   assert.match(
     sitemap,
     /<loc>https:\/\/sigmacode\.biz\/<\/loc>/,
@@ -187,9 +207,17 @@ test("serves a bilingual sitemap with reciprocal alternates", async () => {
     sitemap,
     /<loc>https:\/\/sigmacode\.biz\/en\/docs\/getting-started<\/loc>/,
   );
-  assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 10);
-  assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 10);
-  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 10);
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigmacode\.biz\/docs\/architecture<\/loc>/,
+  );
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigmacode\.biz\/en\/docs\/evaluation<\/loc>/,
+  );
+  assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 18);
+  assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 18);
+  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 18);
 });
 
 test("keeps production assets and responsive source in place", async () => {
@@ -204,6 +232,8 @@ test("keeps production assets and responsive source in place", async () => {
     siteConfig,
     contentPage,
     contentPages,
+    technicalContentPages,
+    contentTypes,
     css,
     packageJson,
   ] = await Promise.all([
@@ -217,6 +247,8 @@ test("keeps production assets and responsive source in place", async () => {
     readFile(new URL("../app/site-config.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/content-page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/content-pages.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/technical-content-pages.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/content-types.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
@@ -250,8 +282,15 @@ test("keeps production assets and responsive source in place", async () => {
   assert.match(sitemapRoute, /x-default/);
   assert.match(siteConfig, /https:\/\/sigmacode\.biz/);
   assert.match(siteConfig, /INDEXABLE_PATHS/);
+  assert.match(siteConfig, /\/docs\/architecture/);
+  assert.match(siteConfig, /\/docs\/evaluation/);
   assert.match(siteConfig, /RELEASE_VERSION = "0\.1\.5"/);
-  assert.doesNotMatch(`${landing}\n${contentPage}\n${contentPages}`, /0\.1\.4/);
+  assert.match(contentTypes, /cli-and-configuration/);
+  assert.match(technicalContentPages, /security-and-recovery/);
+  assert.doesNotMatch(
+    `${landing}\n${contentPage}\n${contentPages}\n${technicalContentPages}`,
+    /0\.1\.4/,
+  );
   assert.doesNotMatch(siteConfig, /chatgpt\.site|NEXT_PUBLIC_SITE_URL/);
   assert.match(css, /@media \(max-width: 600px\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);

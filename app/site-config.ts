@@ -30,4 +30,14 @@ export const INDEXABLE_PATHS = [
     en: "/en/features/evidence-backed-completion",
   },
   { zh: "/docs/getting-started", en: "/en/docs/getting-started" },
+  {
+    zh: "/docs/cli-and-configuration",
+    en: "/en/docs/cli-and-configuration",
+  },
+  { zh: "/docs/architecture", en: "/en/docs/architecture" },
+  {
+    zh: "/docs/security-and-recovery",
+    en: "/en/docs/security-and-recovery",
+  },
+  { zh: "/docs/evaluation", en: "/en/docs/evaluation" },
 ] as const;
