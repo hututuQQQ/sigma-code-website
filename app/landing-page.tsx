@@ -1,9 +1,15 @@
 /* eslint-disable @next/next/no-img-element, @next/next/no-html-link-for-pages -- vinext dev currently fails to optimize Next image/link shims reliably. */
 
-import { SITE_URLS } from "./site-config";
+import {
+  GITHUB_URL,
+  RELEASE_TAG,
+  RELEASE_URL,
+  RELEASE_VERSION,
+  SITE_URLS,
+} from "./site-config";
 
-const githubUrl = "https://github.com/hututuQQQ/sigma";
-const releaseUrl = `${githubUrl}/releases/tag/v0.1.4`;
+const githubUrl = GITHUB_URL;
+const releaseUrl = RELEASE_URL;
 
 type Locale = "zh" | "en";
 
@@ -24,7 +30,7 @@ const copy = {
     headlineAccent: "带着证据完成。",
     heroBody:
       "Sigma Code 是为长任务设计的开源 Coding Agent。会话写入耐久事件流，命令运行在原生沙箱，只有测试、验证与审查证据齐全，任务才会进入完成状态。",
-    download: "下载 v0.1.4",
+    download: `下载 ${RELEASE_TAG}`,
     source: "在 GitHub 查看",
     availability: ["Linux x64 · Stable", "Windows x64 · Preview", "MIT licensed"],
     demoLabel: "真实产品演示",
@@ -129,7 +135,7 @@ const copy = {
       ["Sigma Code 最大的区别是什么？", "它把恢复和验证做成运行时协议，而不是提示词约定。状态会持久化，完成需要证据。"],
       ["电脑重启后还能继续吗？", "可以。会话会写入耐久事件流，并从最近检查点恢复；恢复粒度取决于任务所处阶段。"],
       ["支持哪些模型？", "支持多 Provider 接入，包括 DeepSeek 与统一 Pi Provider 网关。具体认证和能力范围以项目文档为准。"],
-      ["Windows 可以直接安装吗？", "v0.1.4 提供 Windows x64 未签名预览版；Linux x64 是当前稳定发行版。"],
+      ["Windows 可以直接安装吗？", `${RELEASE_TAG} 提供 Windows x64 未签名预览版；Linux x64 是当前稳定发行版。`],
     ],
     ctaEyebrow: "START WITH A REAL TASK",
     ctaTitle: "让下一个长任务，不再从头开始。",
@@ -156,7 +162,7 @@ const copy = {
     headlineAccent: "Proof closes the task.",
     heroBody:
       "Sigma Code is an open-source coding agent built for long-running work. Sessions live in a durable event stream, commands run inside native sandboxes, and a task completes only when tests, validation, and review evidence agree.",
-    download: "Download v0.1.4",
+    download: `Download ${RELEASE_TAG}`,
     source: "View on GitHub",
     availability: ["Linux x64 · Stable", "Windows x64 · Preview", "MIT licensed"],
     demoLabel: "Real product demo",
@@ -261,7 +267,7 @@ const copy = {
       ["What makes Sigma Code different?", "Recovery and verification are runtime protocols, not prompt conventions. State persists, and completion needs evidence."],
       ["Can a task resume after a restart?", "Yes. Sessions are written to a durable event stream and resume from the latest checkpoint; granularity depends on the task stage."],
       ["Which models are supported?", "Sigma Code supports multiple providers, including DeepSeek and the unified Pi provider gateway. See the project docs for authentication details."],
-      ["Is there a Windows build?", "v0.1.4 includes an unsigned Windows x64 preview. Linux x64 is the current stable release."],
+      ["Is there a Windows build?", `${RELEASE_TAG} includes an unsigned Windows x64 preview. Linux x64 is the current stable release.`],
     ],
     ctaEyebrow: "START WITH A REAL TASK",
     ctaTitle: "Let the next long task continue where it left off.",
@@ -285,7 +291,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Linux, Windows",
     description: text.heroBody,
-    softwareVersion: "0.1.4",
+    softwareVersion: RELEASE_VERSION,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     url: isChinese ? SITE_URLS.zh : SITE_URLS.en,
     codeRepository: githubUrl,
@@ -303,7 +309,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
         <a className="brand" href={isChinese ? "/" : "/en"} aria-label={text.homeLabel}>
           <img className="brand-mark" src="/sigma-code-mark.png" alt="" width={36} height={36} />
           <span className="brand-name">Sigma Code</span>
-          <span className="version">v0.1.4</span>
+          <span className="version">{RELEASE_TAG}</span>
         </a>
 
         <nav className="main-nav" aria-label={text.navLabel}>

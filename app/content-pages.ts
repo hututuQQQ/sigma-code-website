@@ -1,3 +1,5 @@
+import { RELEASE_VERSION } from "./site-config";
+
 export const CONTENT_SLUGS = [
   "durable-sessions",
   "native-sandbox",
@@ -92,7 +94,7 @@ export const contentPages = {
       ],
       ctaTitle: "让下一次长任务从现场继续",
       ctaBody:
-        "下载 Sigma Code 0.1.4，或查看开源运行时如何记录、恢复并验证一次完整任务。",
+        `下载 Sigma Code ${RELEASE_VERSION}，或查看开源运行时如何记录、恢复并验证一次完整任务。`,
     },
     "native-sandbox": {
       slug: "native-sandbox",
@@ -122,7 +124,7 @@ export const contentPages = {
           heading: "Windows 与 Linux 的隔离方式",
           paragraphs: [
             "Windows 构建通过原生 sigma-exec Broker 使用 AppContainer；Linux 构建使用 namespace 隔离。两端共享相同的上层工具协议和结果语义，但底层实现遵循各自操作系统的安全模型。",
-            "平台差异不会被隐藏。Windows x64 当前仍是未签名预览版，可能触发 SmartScreen 或 Smart App Control；Linux x64 是 0.1.4 的稳定发布目标。安装前应核对发布页提供的 SHA-256 与来源证明。",
+            `平台差异不会被隐藏。Windows x64 当前仍是未签名预览版，可能触发 SmartScreen 或 Smart App Control；Linux x64 是 ${RELEASE_VERSION} 的稳定发布目标。安装前应核对发布页提供的 SHA-256 与来源证明。`,
           ],
         },
         {
@@ -218,12 +220,12 @@ export const contentPages = {
       description:
         "Sigma Code 中文入门指南：下载 Linux 稳定版或 Windows 预览版，配置 DeepSeek Provider，检查环境并启动 TUI。",
       lead:
-        "Sigma Code 0.1.4 提供 Linux x64 稳定版、Windows x64 未签名预览版，以及可审计的源码构建路径。下面的最短流程会先验证安装和模型连接，再进入真实仓库。",
+        `Sigma Code ${RELEASE_VERSION} 提供 Linux x64 稳定版、Windows x64 未签名预览版，以及可审计的源码构建路径。下面的最短流程会先验证安装和模型连接，再进入真实仓库。`,
       sections: [
         {
           heading: "1. 选择并核对发行包",
           paragraphs: [
-            "从 GitHub Release 下载与你的平台匹配的 0.1.4 产物。Linux x64 是当前稳定目标；Windows x64 是未签名预览版，可能出现系统安全警告。",
+            `从 GitHub Release 下载与你的平台匹配的 ${RELEASE_VERSION} 产物。Linux x64 是当前稳定目标；Windows x64 是未签名预览版，可能出现系统安全警告。`,
             "解压或运行安装程序前，核对发布页中的 SHA-256 侧文件与签名来源证明。Windows 桌面安装包同时包含 Sigma Code UI 和经过验证的 Runtime，不需要额外安装 Node.js 或 Agent CLI。",
           ],
         },
@@ -282,7 +284,7 @@ export const contentPages = {
           "请在 GitHub Issues 提交可复现步骤、平台信息和相关日志，并避免公开 API Key 等敏感信息。",
         ],
       ],
-      ctaTitle: "下载 0.1.4，开始第一个可恢复任务",
+      ctaTitle: `下载 ${RELEASE_VERSION}，开始第一个可恢复任务`,
       ctaBody:
         "先核对发行产物，再用 doctor 验证环境与模型连接。",
     },
@@ -348,7 +350,7 @@ export const contentPages = {
       ],
       ctaTitle: "Continue the next long task from where it stopped",
       ctaBody:
-        "Download Sigma Code 0.1.4 or inspect the open-source runtime that records, resumes, and verifies a task.",
+        `Download Sigma Code ${RELEASE_VERSION} or inspect the open-source runtime that records, resumes, and verifies a task.`,
     },
     "native-sandbox": {
       slug: "native-sandbox",
@@ -378,7 +380,7 @@ export const contentPages = {
           heading: "How isolation differs by platform",
           paragraphs: [
             "The Windows build uses the native sigma-exec broker with AppContainer. The Linux build uses namespace isolation. Both expose the same upper-level tool and result protocol while following the security model of each operating system.",
-            "Platform differences remain visible. Windows x64 is currently an unsigned preview and may trigger SmartScreen or Smart App Control. Linux x64 is the stable 0.1.4 release target. Verify the published SHA-256 files and provenance before installation.",
+            `Platform differences remain visible. Windows x64 is currently an unsigned preview and may trigger SmartScreen or Smart App Control. Linux x64 is the stable ${RELEASE_VERSION} release target. Verify the published SHA-256 files and provenance before installation.`,
           ],
         },
         {
@@ -474,12 +476,12 @@ export const contentPages = {
       description:
         "Install Sigma Code on Linux or Windows, configure the DeepSeek provider, check the environment, and launch your first durable coding agent task.",
       lead:
-        "Sigma Code 0.1.4 ships a stable Linux x64 release, an unsigned Windows x64 preview, and an auditable source-build path. This short path verifies the install and model connection before entering a real repository.",
+        `Sigma Code ${RELEASE_VERSION} ships a stable Linux x64 release, an unsigned Windows x64 preview, and an auditable source-build path. This short path verifies the install and model connection before entering a real repository.`,
       sections: [
         {
           heading: "1. Choose and verify a release",
           paragraphs: [
-            "Download the 0.1.4 artifact for your platform from GitHub Releases. Linux x64 is the current stable target. Windows x64 is an unsigned preview and may produce an operating-system security warning.",
+            `Download the ${RELEASE_VERSION} artifact for your platform from GitHub Releases. Linux x64 is the current stable target. Windows x64 is an unsigned preview and may produce an operating-system security warning.`,
             "Before extracting or installing, verify the published SHA-256 sidecar and provenance. The Windows desktop installer includes the Sigma Code UI and verified runtime, so it does not require a separate Node.js or Agent CLI installation.",
           ],
         },
@@ -538,7 +540,7 @@ export const contentPages = {
           "Open a GitHub issue with reproducible steps, platform details, and relevant logs. Never include API keys or other secrets.",
         ],
       ],
-      ctaTitle: "Download 0.1.4 and start a recoverable task",
+      ctaTitle: `Download ${RELEASE_VERSION} and start a recoverable task`,
       ctaBody:
         "Verify the artifact first, then use doctor to check the runtime and model connection.",
     },

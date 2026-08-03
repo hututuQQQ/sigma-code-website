@@ -2,6 +2,14 @@ export const SITE_ORIGIN = "https://sigmacode.biz";
 
 export const SITE_HOST = new URL(SITE_ORIGIN).hostname;
 
+export const GITHUB_URL = "https://github.com/hututuQQQ/sigma";
+
+export const RELEASE_VERSION = "0.1.5";
+
+export const RELEASE_TAG = `v${RELEASE_VERSION}`;
+
+export const RELEASE_URL = `${GITHUB_URL}/releases/tag/${RELEASE_TAG}`;
+
 export const SITE_URLS = {
   zh: `${SITE_ORIGIN}/`,
   en: `${SITE_ORIGIN}/en`,
