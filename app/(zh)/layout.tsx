@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { siteFontClassName } from "../site-fonts";
 import {
   getLanguageAlternates,
-  getRequestOrigin,
   siteIcons,
 } from "../site-metadata";
+import { SITE_ORIGIN } from "../site-config";
 import "../globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const origin = await getRequestOrigin();
-  const ogImage = new URL("/og-v2.png", origin);
+  const ogImage = new URL("/og-v2.png", SITE_ORIGIN);
 
   return {
+    metadataBase: new URL(SITE_ORIGIN),
     title: "Sigma Code — 可恢复、可验证的开源 Coding Agent",
     description:
       "Sigma Code 为长任务而生：耐久会话、原生沙箱，以及由测试与审查证据约束的完成协议。",
@@ -24,12 +24,13 @@ export async function generateMetadata(): Promise<Metadata> {
       "DeepSeek Coding Agent",
     ],
     alternates: {
-      canonical: new URL("/", origin),
-      languages: getLanguageAlternates(origin),
+      canonical: new URL("/", SITE_ORIGIN),
+      languages: getLanguageAlternates(),
     },
     icons: siteIcons,
     openGraph: {
       type: "website",
+      url: new URL("/", SITE_ORIGIN),
       locale: "zh_CN",
       title: "Sigma Code — 让任务越过中断，带着证据完成",
       description:

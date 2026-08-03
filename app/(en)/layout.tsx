@@ -2,26 +2,27 @@ import type { Metadata } from "next";
 import { siteFontClassName } from "../site-fonts";
 import {
   getLanguageAlternates,
-  getRequestOrigin,
   siteIcons,
 } from "../site-metadata";
+import { SITE_ORIGIN } from "../site-config";
 import "../globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const origin = await getRequestOrigin();
-  const ogImage = new URL("/og-v2.png", origin);
+  const ogImage = new URL("/og-v2.png", SITE_ORIGIN);
 
   return {
+    metadataBase: new URL(SITE_ORIGIN),
     title: "Sigma Code — Durable, verifiable coding agent",
     description:
       "An open-source coding agent with durable sessions, native sandboxing, and evidence-backed completion.",
     alternates: {
-      canonical: new URL("/en", origin),
-      languages: getLanguageAlternates(origin),
+      canonical: new URL("/en", SITE_ORIGIN),
+      languages: getLanguageAlternates(),
     },
     icons: siteIcons,
     openGraph: {
       type: "website",
+      url: new URL("/en", SITE_ORIGIN),
       locale: "en_US",
       title: "Sigma Code — Work survives. Proof closes the task.",
       description:

@@ -2,17 +2,22 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(pathname = "/", accept = "text/html") {
+async function render(
+  pathname = "/",
+  accept = "text/html",
+  origin = "http://localhost",
+) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
+  const requestUrl = new URL(pathname, origin);
 
   return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
+    new Request(requestUrl, {
       headers: {
         accept,
-        "x-forwarded-host": "localhost",
-        "x-forwarded-proto": "http",
+        "x-forwarded-host": requestUrl.host,
+        "x-forwarded-proto": requestUrl.protocol.replace(":", ""),
       },
     }),
     {
@@ -61,9 +66,11 @@ test("server-renders the Sigma Code landing page", async () => {
   assert.match(html, /sigma-code-demo\.gif/);
   assert.match(html, /href="\/en"/);
   assert.match(html, /\/og-v2\.png/);
-  assertAlternate(html, "zh-CN", "http://localhost/");
-  assertAlternate(html, "en", "http://localhost/en");
-  assertAlternate(html, "x-default", "http://localhost/");
+  assertAlternate(html, "zh-CN", "https://sigmacode.biz/");
+  assertAlternate(html, "en", "https://sigmacode.biz/en");
+  assertAlternate(html, "x-default", "https://sigmacode.biz/");
+  assert.match(html, /href="\/features\/durable-sessions"/);
+  assert.match(html, /href="\/docs\/getting-started"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -78,9 +85,61 @@ test("server-renders the English landing page", async () => {
   assert.match(html, /Proof closes the task/);
   assert.match(html, /Completion requires evidence/);
   assert.match(html, /Terminal-Bench 2\.1/);
-  assertAlternate(html, "zh-CN", "http://localhost/");
-  assertAlternate(html, "en", "http://localhost/en");
-  assertAlternate(html, "x-default", "http://localhost/");
+  assertAlternate(html, "zh-CN", "https://sigmacode.biz/");
+  assertAlternate(html, "en", "https://sigmacode.biz/en");
+  assertAlternate(html, "x-default", "https://sigmacode.biz/");
+  assert.match(html, /href="\/en\/features\/native-sandbox"/);
+});
+
+test("redirects non-canonical hosts and HTTP to the primary origin", async () => {
+  const www = await render(
+    "/en/features/durable-sessions?source=www",
+    "text/html",
+    "https://www.sigmacode.biz",
+  );
+  assert.equal(www.status, 301);
+  assert.equal(
+    www.headers.get("location"),
+    "https://sigmacode.biz/en/features/durable-sessions?source=www",
+  );
+
+  const oldHost = await render(
+    "/docs/getting-started",
+    "text/html",
+    "https://sigma-code-agent.a962950733.chatgpt.site",
+  );
+  assert.equal(oldHost.status, 301);
+  assert.equal(
+    oldHost.headers.get("location"),
+    "https://sigmacode.biz/docs/getting-started",
+  );
+
+  const http = await render("/en", "text/html", "http://sigmacode.biz");
+  assert.equal(http.status, 301);
+  assert.equal(http.headers.get("location"), "https://sigmacode.biz/en");
+});
+
+test("server-renders distinct bilingual product guides", async () => {
+  const paths = [
+    "/features/durable-sessions",
+    "/features/native-sandbox",
+    "/features/evidence-backed-completion",
+    "/docs/getting-started",
+    "/en/features/durable-sessions",
+    "/en/features/native-sandbox",
+    "/en/features/evidence-backed-completion",
+    "/en/docs/getting-started",
+  ];
+
+  for (const pathname of paths) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, pathname);
+    const html = await response.text();
+    assert.match(html, /<h1>/, pathname);
+    assert.match(html, /application\/ld\+json/, pathname);
+    assert.match(html, /rel="canonical"/, pathname);
+    assert.match(html, /Sigma Code/, pathname);
+  }
 });
 
 test("serves crawler policy with the production sitemap URL", async () => {
@@ -103,7 +162,7 @@ test("serves a bilingual sitemap with reciprocal alternates", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^application\/xml\b/i);
 
   const sitemap = await response.text();
-  assert.equal((sitemap.match(/<url>/g) ?? []).length, 2);
+  assert.equal((sitemap.match(/<url>/g) ?? []).length, 10);
   assert.match(
     sitemap,
     /<loc>https:\/\/sigmacode\.biz\/<\/loc>/,
@@ -112,9 +171,17 @@ test("serves a bilingual sitemap with reciprocal alternates", async () => {
     sitemap,
     /<loc>https:\/\/sigmacode\.biz\/en<\/loc>/,
   );
-  assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 2);
-  assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 2);
-  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 2);
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigmacode\.biz\/features\/durable-sessions<\/loc>/,
+  );
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/sigmacode\.biz\/en\/docs\/getting-started<\/loc>/,
+  );
+  assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 10);
+  assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 10);
+  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 10);
 });
 
 test("keeps production assets and responsive source in place", async () => {
@@ -169,7 +236,9 @@ test("keeps production assets and responsive source in place", async () => {
   assert.match(englishLayout, /lang="en"/);
   assert.match(robotsRoute, /Sitemap:/);
   assert.match(sitemapRoute, /x-default/);
-  assert.match(siteConfig, /NEXT_PUBLIC_SITE_URL/);
+  assert.match(siteConfig, /https:\/\/sigmacode\.biz/);
+  assert.match(siteConfig, /INDEXABLE_PATHS/);
+  assert.doesNotMatch(siteConfig, /chatgpt\.site|NEXT_PUBLIC_SITE_URL/);
   assert.match(css, /@media \(max-width: 600px\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
