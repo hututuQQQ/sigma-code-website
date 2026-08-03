@@ -1,5 +1,4 @@
-const DEFAULT_SITE_ORIGIN =
-  "https://sigma-code-agent.a962950733.chatgpt.site";
+const DEFAULT_SITE_ORIGIN = "https://sigmacode.biz";
 
 export const SITE_ORIGIN = (
   process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_ORIGIN

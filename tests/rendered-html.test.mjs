@@ -93,7 +93,7 @@ test("serves crawler policy with the production sitemap URL", async () => {
   assert.match(robots, /^Allow: \/$/m);
   assert.match(
     robots,
-    /^Sitemap: https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/sitemap\.xml$/m,
+    /^Sitemap: https:\/\/sigmacode\.biz\/sitemap\.xml$/m,
   );
 });
 
@@ -106,11 +106,11 @@ test("serves a bilingual sitemap with reciprocal alternates", async () => {
   assert.equal((sitemap.match(/<url>/g) ?? []).length, 2);
   assert.match(
     sitemap,
-    /<loc>https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/<\/loc>/,
+    /<loc>https:\/\/sigmacode\.biz\/<\/loc>/,
   );
   assert.match(
     sitemap,
-    /<loc>https:\/\/sigma-code-agent\.a962950733\.chatgpt\.site\/en<\/loc>/,
+    /<loc>https:\/\/sigmacode\.biz\/en<\/loc>/,
   );
   assert.equal((sitemap.match(/hreflang="zh-CN"/g) ?? []).length, 2);
   assert.equal((sitemap.match(/hreflang="en"/g) ?? []).length, 2);
