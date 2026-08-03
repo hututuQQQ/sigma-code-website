@@ -1,22 +1,11 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { SITE_ORIGIN } from "./site-config";
 
-export async function getRequestOrigin() {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol =
-    requestHeaders.get("x-forwarded-proto") ??
-    (host?.startsWith("localhost") ? "http" : "https");
-
-  return `${protocol}://${host ?? "localhost:3000"}`;
-}
-
-export function getLanguageAlternates(origin: string) {
+export function getLanguageAlternates() {
   return {
-    "zh-CN": new URL("/", origin),
-    en: new URL("/en", origin),
-    "x-default": new URL("/", origin),
+    "zh-CN": new URL("/", SITE_ORIGIN),
+    en: new URL("/en", SITE_ORIGIN),
+    "x-default": new URL("/", SITE_ORIGIN),
   };
 }
 

@@ -1,10 +1,23 @@
-import { SITE_URLS } from "../site-config";
+import { INDEXABLE_PATHS, SITE_ORIGIN } from "../site-config";
 
-function alternates() {
+function absoluteUrl(path: string) {
+  return new URL(path, SITE_ORIGIN).toString();
+}
+
+function alternates(zhPath: string, enPath: string) {
   return [
-    `    <xhtml:link rel="alternate" hreflang="zh-CN" href="${SITE_URLS.zh}" />`,
-    `    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URLS.en}" />`,
-    `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URLS.zh}" />`,
+    `    <xhtml:link rel="alternate" hreflang="zh-CN" href="${absoluteUrl(zhPath)}" />`,
+    `    <xhtml:link rel="alternate" hreflang="en" href="${absoluteUrl(enPath)}" />`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(zhPath)}" />`,
+  ].join("\n");
+}
+
+function sitemapEntry(path: string, zhPath: string, enPath: string) {
+  return [
+    "  <url>",
+    `    <loc>${absoluteUrl(path)}</loc>`,
+    alternates(zhPath, enPath),
+    "  </url>",
   ].join("\n");
 }
 
@@ -12,14 +25,10 @@ export function GET() {
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
-    "  <url>",
-    `    <loc>${SITE_URLS.zh}</loc>`,
-    alternates(),
-    "  </url>",
-    "  <url>",
-    `    <loc>${SITE_URLS.en}</loc>`,
-    alternates(),
-    "  </url>",
+    ...INDEXABLE_PATHS.flatMap(({ zh, en }) => [
+      sitemapEntry(zh, zh, en),
+      sitemapEntry(en, zh, en),
+    ]),
     "</urlset>",
     "",
   ].join("\n");

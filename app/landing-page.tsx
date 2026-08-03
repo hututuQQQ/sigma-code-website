@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element, @next/next/no-html-link-for-pages -- vinext dev currently fails to optimize Next image/link shims reliably. */
 
+import { SITE_URLS } from "./site-config";
+
 const githubUrl = "https://github.com/hututuQQQ/sigma";
 const releaseUrl = `${githubUrl}/releases/tag/v0.1.4`;
 
@@ -11,8 +13,8 @@ const copy = {
     homeLabel: "Sigma Code 首页",
     navLabel: "主导航",
     nav: [
-      ["原则", "#principles"],
       ["工作方式", "#workflow"],
+      ["功能指南", "#guides"],
       ["验证", "#evidence"],
       ["下载", "#download"],
     ],
@@ -94,6 +96,33 @@ const copy = {
     sameSetup: "DeepSeek · 89 tasks · same setup",
     delta: "Δ +2 completed tasks",
     fullRun: "Full 89-task run",
+    guidesEyebrow: "PRODUCT GUIDES",
+    guidesTitle: "深入理解一个可靠 Coding Agent。",
+    guidesBody:
+      "从可恢复会话、原生沙箱到证据式完成，了解 Sigma Code 如何把可靠性做成运行时能力，并用入门指南完成第一次配置。",
+    guidesRead: "阅读指南",
+    guides: [
+      {
+        title: "可恢复 Coding Agent 会话",
+        body: "了解事件流、检查点与中断恢复如何保存长任务现场。",
+        href: "/features/durable-sessions",
+      },
+      {
+        title: "Windows 与 Linux 原生沙箱",
+        body: "了解 AppContainer、namespace 与显式执行边界。",
+        href: "/features/native-sandbox",
+      },
+      {
+        title: "证据式完成协议",
+        body: "了解测试、验证与审查如何共同决定任务是否完成。",
+        href: "/features/evidence-backed-completion",
+      },
+      {
+        title: "Sigma Code 入门",
+        body: "下载、配置 Provider、运行 doctor 并启动第一个真实任务。",
+        href: "/docs/getting-started",
+      },
+    ],
     faqEyebrow: "FAQ",
     faqTitle: "几个关键问题。",
     faqs: [
@@ -116,8 +145,8 @@ const copy = {
     homeLabel: "Sigma Code home",
     navLabel: "Main navigation",
     nav: [
-      ["Principles", "#principles"],
       ["How it works", "#workflow"],
+      ["Guides", "#guides"],
       ["Evidence", "#evidence"],
       ["Download", "#download"],
     ],
@@ -199,6 +228,33 @@ const copy = {
     sameSetup: "DeepSeek · 89 tasks · same setup",
     delta: "Δ +2 completed tasks",
     fullRun: "Full 89-task run",
+    guidesEyebrow: "PRODUCT GUIDES",
+    guidesTitle: "Understand what makes a coding agent dependable.",
+    guidesBody:
+      "Explore durable sessions, native sandboxing, evidence-backed completion, and a practical path to your first Sigma Code task.",
+    guidesRead: "Read guide",
+    guides: [
+      {
+        title: "Durable coding agent sessions",
+        body: "See how event streams, checkpoints, and recovery preserve long-running work.",
+        href: "/en/features/durable-sessions",
+      },
+      {
+        title: "Native sandboxing on Windows and Linux",
+        body: "Understand AppContainer, namespaces, and explicit execution boundaries.",
+        href: "/en/features/native-sandbox",
+      },
+      {
+        title: "Evidence-backed completion",
+        body: "Learn how tests, validation, and review determine whether a task is complete.",
+        href: "/en/features/evidence-backed-completion",
+      },
+      {
+        title: "Get started with Sigma Code",
+        body: "Download, configure a provider, run doctor, and begin a real task.",
+        href: "/en/docs/getting-started",
+      },
+    ],
     faqEyebrow: "FAQ",
     faqTitle: "A few important questions.",
     faqs: [
@@ -231,7 +287,9 @@ export function LandingPage({ locale }: { locale: Locale }) {
     description: text.heroBody,
     softwareVersion: "0.1.4",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: isChinese ? SITE_URLS.zh : SITE_URLS.en,
     codeRepository: githubUrl,
+    sameAs: [githubUrl],
   };
 
   return (
@@ -399,6 +457,23 @@ export function LandingPage({ locale }: { locale: Locale }) {
               <b>55.056%</b>
             </div>
             <div className="benchmark-foot"><span>{text.delta}</span><span>{text.fullRun}</span></div>
+          </div>
+        </section>
+
+        <section className="section resource-section" id="guides">
+          <div className="section-intro">
+            <div><p className="overline">{text.guidesEyebrow}</p><h2>{text.guidesTitle}</h2></div>
+            <p>{text.guidesBody}</p>
+          </div>
+          <div className="resource-grid">
+            {text.guides.map((guide, index) => (
+              <a href={guide.href} key={guide.href}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{guide.title}</h3>
+                <p>{guide.body}</p>
+                <b>{text.guidesRead} →</b>
+              </a>
+            ))}
           </div>
         </section>
 

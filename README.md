@@ -1,7 +1,8 @@
 # Sigma Code Website
 
-The official landing page for [Sigma Code](https://github.com/hututuQQQ/sigma):
-the open-source coding agent that survives interruptions and proves its changes.
+The official website for [Sigma Code](https://github.com/hututuQQQ/sigma),
+published at [sigmacode.biz](https://sigmacode.biz): the open-source coding
+agent that survives interruptions and proves its changes.
 
 The site turns Sigma Code's core runtime guarantees into a clear product story:
 
@@ -11,6 +12,9 @@ The site turns Sigma Code's core runtime guarantees into a clear product story:
 - transparent Terminal-Bench 2.1 results and evaluation boundaries
 - download paths for Linux, Windows, and source builds
 - searchable technical content around DeepSeek, agent sandboxes, and recovery
+- bilingual product guides for durable sessions, native sandboxing,
+  evidence-backed completion, and getting started
+- one canonical HTTPS origin with permanent redirects from legacy hosts
 
 ## Local development
 

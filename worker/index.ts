@@ -1,6 +1,7 @@
 /** Cloudflare Worker entry point for the Sigma Code website. */
 import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { SITE_HOST, SITE_ORIGIN } from "../app/site-config";
 
 interface Env {
   ASSETS: Fetcher;
@@ -28,6 +29,19 @@ interface ExecutionContext {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+
+    const isLocalRequest =
+      url.hostname === "localhost" || url.hostname === "127.0.0.1";
+    if (!isLocalRequest && (url.hostname !== SITE_HOST || url.protocol !== "https:")) {
+      const destination = new URL(`${url.pathname}${url.search}`, SITE_ORIGIN);
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: destination.toString(),
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+    }
 
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
