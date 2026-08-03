@@ -1,9 +1,15 @@
 /* eslint-disable @next/next/no-img-element, @next/next/no-html-link-for-pages -- vinext dev currently fails to optimize Next image/link shims reliably. */
 
-import { SITE_URLS } from "./site-config";
+import {
+  GITHUB_URL,
+  RELEASE_TAG,
+  RELEASE_URL,
+  RELEASE_VERSION,
+  SITE_URLS,
+} from "./site-config";
 
-const githubUrl = "https://github.com/hututuQQQ/sigma";
-const releaseUrl = `${githubUrl}/releases/tag/v0.1.4`;
+const githubUrl = GITHUB_URL;
+const releaseUrl = RELEASE_URL;
 
 type Locale = "zh" | "en";
 
@@ -24,7 +30,7 @@ const copy = {
     headlineAccent: "带着证据完成。",
     heroBody:
       "Sigma Code 是为长任务设计的开源 Coding Agent。会话写入耐久事件流，命令运行在原生沙箱，只有测试、验证与审查证据齐全，任务才会进入完成状态。",
-    download: "下载 v0.1.4",
+    download: `下载 ${RELEASE_TAG}`,
     source: "在 GitHub 查看",
     availability: ["Linux x64 · Stable", "Windows x64 · Preview", "MIT licensed"],
     demoLabel: "真实产品演示",
@@ -99,7 +105,7 @@ const copy = {
     guidesEyebrow: "PRODUCT GUIDES",
     guidesTitle: "深入理解一个可靠 Coding Agent。",
     guidesBody:
-      "从可恢复会话、原生沙箱到证据式完成，了解 Sigma Code 如何把可靠性做成运行时能力，并用入门指南完成第一次配置。",
+      "从可恢复会话、原生沙箱到 CLI、架构和评测方法，了解 Sigma Code 如何把可靠性做成运行时能力。",
     guidesRead: "阅读指南",
     guides: [
       {
@@ -122,6 +128,26 @@ const copy = {
         body: "下载、配置 Provider、运行 doctor 并启动第一个真实任务。",
         href: "/docs/getting-started",
       },
+      {
+        title: "CLI、配置与 Provider",
+        body: "查阅常用命令、权限默认值、认证方式与模型选择。",
+        href: "/docs/cli-and-configuration",
+      },
+      {
+        title: "Runtime 架构",
+        body: "理解事件循环、组合根、包边界以及 ACP v1 如何连接桌面端。",
+        href: "/docs/architecture",
+      },
+      {
+        title: "安全、权限与恢复",
+        body: "深入原生执行边界、耐久存储、检查点和完成协议。",
+        href: "/docs/security-and-recovery",
+      },
+      {
+        title: "透明评测方法",
+        body: "查看预注册、公平边界、诊断结果与正确解读方式。",
+        href: "/docs/evaluation",
+      },
     ],
     faqEyebrow: "FAQ",
     faqTitle: "几个关键问题。",
@@ -129,7 +155,7 @@ const copy = {
       ["Sigma Code 最大的区别是什么？", "它把恢复和验证做成运行时协议，而不是提示词约定。状态会持久化，完成需要证据。"],
       ["电脑重启后还能继续吗？", "可以。会话会写入耐久事件流，并从最近检查点恢复；恢复粒度取决于任务所处阶段。"],
       ["支持哪些模型？", "支持多 Provider 接入，包括 DeepSeek 与统一 Pi Provider 网关。具体认证和能力范围以项目文档为准。"],
-      ["Windows 可以直接安装吗？", "v0.1.4 提供 Windows x64 未签名预览版；Linux x64 是当前稳定发行版。"],
+      ["Windows 可以直接安装吗？", `${RELEASE_TAG} 提供 Windows x64 未签名预览版；Linux x64 是当前稳定发行版。`],
     ],
     ctaEyebrow: "START WITH A REAL TASK",
     ctaTitle: "让下一个长任务，不再从头开始。",
@@ -156,7 +182,7 @@ const copy = {
     headlineAccent: "Proof closes the task.",
     heroBody:
       "Sigma Code is an open-source coding agent built for long-running work. Sessions live in a durable event stream, commands run inside native sandboxes, and a task completes only when tests, validation, and review evidence agree.",
-    download: "Download v0.1.4",
+    download: `Download ${RELEASE_TAG}`,
     source: "View on GitHub",
     availability: ["Linux x64 · Stable", "Windows x64 · Preview", "MIT licensed"],
     demoLabel: "Real product demo",
@@ -231,7 +257,7 @@ const copy = {
     guidesEyebrow: "PRODUCT GUIDES",
     guidesTitle: "Understand what makes a coding agent dependable.",
     guidesBody:
-      "Explore durable sessions, native sandboxing, evidence-backed completion, and a practical path to your first Sigma Code task.",
+      "Explore durable sessions, native sandboxing, CLI configuration, runtime architecture, and the published evaluation method.",
     guidesRead: "Read guide",
     guides: [
       {
@@ -254,6 +280,26 @@ const copy = {
         body: "Download, configure a provider, run doctor, and begin a real task.",
         href: "/en/docs/getting-started",
       },
+      {
+        title: "CLI, configuration, and providers",
+        body: "Reference core commands, permission defaults, authentication, and model selection.",
+        href: "/en/docs/cli-and-configuration",
+      },
+      {
+        title: "Runtime architecture",
+        body: "Understand the event loop, composition root, package boundaries, and ACP v1 desktop bridge.",
+        href: "/en/docs/architecture",
+      },
+      {
+        title: "Security, permissions, and recovery",
+        body: "Inspect the native execution boundary, durable store, checkpoints, and completion protocol.",
+        href: "/en/docs/security-and-recovery",
+      },
+      {
+        title: "Transparent evaluation",
+        body: "Read the preregistration rules, fairness boundary, diagnostic result, and limitations.",
+        href: "/en/docs/evaluation",
+      },
     ],
     faqEyebrow: "FAQ",
     faqTitle: "A few important questions.",
@@ -261,7 +307,7 @@ const copy = {
       ["What makes Sigma Code different?", "Recovery and verification are runtime protocols, not prompt conventions. State persists, and completion needs evidence."],
       ["Can a task resume after a restart?", "Yes. Sessions are written to a durable event stream and resume from the latest checkpoint; granularity depends on the task stage."],
       ["Which models are supported?", "Sigma Code supports multiple providers, including DeepSeek and the unified Pi provider gateway. See the project docs for authentication details."],
-      ["Is there a Windows build?", "v0.1.4 includes an unsigned Windows x64 preview. Linux x64 is the current stable release."],
+      ["Is there a Windows build?", `${RELEASE_TAG} includes an unsigned Windows x64 preview. Linux x64 is the current stable release.`],
     ],
     ctaEyebrow: "START WITH A REAL TASK",
     ctaTitle: "Let the next long task continue where it left off.",
@@ -277,7 +323,8 @@ const copy = {
 export function LandingPage({ locale }: { locale: Locale }) {
   const text = copy[locale];
   const isChinese = locale === "zh";
-  const readmeUrl = `${githubUrl}/blob/main/${isChinese ? "README.zh-CN.md" : "README.md"}`;
+  const architectureUrl = isChinese ? "/docs/architecture" : "/en/docs/architecture";
+  const evaluationUrl = isChinese ? "/docs/evaluation" : "/en/docs/evaluation";
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -285,7 +332,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Linux, Windows",
     description: text.heroBody,
-    softwareVersion: "0.1.4",
+    softwareVersion: RELEASE_VERSION,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     url: isChinese ? SITE_URLS.zh : SITE_URLS.en,
     codeRepository: githubUrl,
@@ -303,7 +350,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
         <a className="brand" href={isChinese ? "/" : "/en"} aria-label={text.homeLabel}>
           <img className="brand-mark" src="/sigma-code-mark.png" alt="" width={36} height={36} />
           <span className="brand-name">Sigma Code</span>
-          <span className="version">v0.1.4</span>
+          <span className="version">{RELEASE_TAG}</span>
         </a>
 
         <nav className="main-nav" aria-label={text.navLabel}>
@@ -403,7 +450,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
               <p className="overline overline-dark">{text.workflowEyebrow}</p>
               <h2>{text.workflowTitle}</h2>
               <p>{text.workflowBody}</p>
-              <a href={readmeUrl} target="_blank" rel="noreferrer">{text.workflowLink} <span aria-hidden="true">↗</span></a>
+              <a href={architectureUrl}>{text.workflowLink} <span aria-hidden="true">→</span></a>
             </div>
 
             <ol className="workflow-list">
@@ -441,7 +488,7 @@ export function LandingPage({ locale }: { locale: Locale }) {
             <h2>{text.evidenceTitle}</h2>
             <p>{text.evidenceBody}</p>
             <p className="evidence-caveat">{text.evidenceCaveat}</p>
-            <a href={readmeUrl} target="_blank" rel="noreferrer">{text.evidenceLink} <span aria-hidden="true">↗</span></a>
+            <a href={evaluationUrl}>{text.evidenceLink} <span aria-hidden="true">→</span></a>
           </div>
 
           <div className="benchmark" aria-label="Terminal-Bench 2.1">
